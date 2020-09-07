@@ -7,7 +7,7 @@ from datetime import datetime as dt
 
 WIDTH = 1280
 HEIGHT = 720
-FPS = 30
+FPS = 6
 
 align = rs.align(rs.stream.color)
 pipeline = rs.pipeline()
@@ -37,10 +37,10 @@ hole_filling.set_option(rs.option.holes_fill, 1)
 # get intrinsics
 profile = config.get_stream(rs.stream.depth)
 depth_intr = profile.as_video_stream_profile().get_intrinsics()
-
 try:
+    count = 0
     while True:
-
+   
         frames = pipeline.wait_for_frames()
         aligned_frames = align.process(frames)  # aligned the position of pixel between color image and depth image
 
@@ -54,6 +54,7 @@ try:
         depth = depth_frame.get_distance(x, y)
         depth_point = rs.rs2_deproject_pixel_to_point(depth_intr, [x, y], depth)
         print(depth_point)
+        count += 1
 
         # post processing
         depth_frame = dec_filter.process(depth_frame)
